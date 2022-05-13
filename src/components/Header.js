@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, Image, StyleSheet, View} from 'react-native';
+import {Text, Image, StyleSheet, View, SafeAreaView} from 'react-native';
 import icon from '../../assets/imgs/icon.png';
 
 export default class Header extends Component {
