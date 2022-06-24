@@ -11,24 +11,31 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
+import ImagePicker, {
+  launchCamera,
+  launchImageLibrary,
+} from 'react-native-image-picker';
 
 class AddPhoto extends Component {
   state = {
-    image: null,
+    image: {},
     comment: '',
   };
 
   pickImage = () => {
-    ImagePicker.showImagePicker(
+    launchImageLibrary(
       {
         title: 'Escolha a imagem',
-        maxWidth: 800,
-        maxHeight: 600,
+        mediaType: 'photo',
+        maxWidth: (Dimensions.get('window').width * 3) / 3,
+        maxHeight: 400,
+        saveToPhotos: true,
       },
       res => {
-        if (res.didCancel) {
-          this.setState({image: {uri: res.uri, base64: res.data}});
+        if (res.assets) {
+          this.setState({
+            image: res.assets[0],
+          });
         }
       },
     );

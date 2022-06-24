@@ -1,13 +1,18 @@
+import 'react-native-gesture-handler';
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Feed from './screens/Feed';
 import AddPhoto from './screens/AddPhoto';
+import Profile from './screens/Profile';
+import Login from './screens/Login';
 
-const Tab = createBottomTabNavigator();
+const TabPrincipal = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 function FeedScreen() {
   return (
@@ -28,14 +33,35 @@ function AddPhotoScreen() {
 function ProfileScreen() {
   return (
     <View>
-      <Text>Profile</Text>
+      <Profile />
     </View>
+  );
+}
+
+function LoginScreen() {
+  return (
+    <View>
+      <Login />
+    </View>
+  );
+}
+
+function ProfileOrLogoutScreen() {
+  return (
+    <Stack.Navigator
+      initialRouteName="ProfileScreen"
+      screenOptions={({route}) => ({
+        headerShown: false,
+      })}>
+      <Stack.Screen name="ProfileScreen" component={Profile} />
+      <Stack.Screen name="LoginScreen" component={Login} />
+    </Stack.Navigator>
   );
 }
 
 function Navigator() {
   return (
-    <Tab.Navigator
+    <TabPrincipal.Navigator
       initialRouteName="Feed"
       screenOptions={({route}) => ({
         headerShown: false,
@@ -44,24 +70,19 @@ function Navigator() {
           const icons = {
             Feed: 'home',
             AddPhoto: 'camera',
-            Profile: 'user',
+            ProfileOrLogoutScreen: 'user',
           };
 
           return <Icon name={icons[route.name]} size={30} color={color} />;
         },
       })}>
-      <Tab.Screen
-        name="Feed"
-        component={FeedScreen}
-        options={{title: 'Feed'}}
+      <TabPrincipal.Screen name="Feed" component={FeedScreen} />
+      <TabPrincipal.Screen name="AddPhoto" component={AddPhotoScreen} />
+      <TabPrincipal.Screen
+        name="ProfileOrLogoutScreen"
+        component={ProfileOrLogoutScreen}
       />
-      <Tab.Screen
-        name="AddPhoto"
-        component={AddPhotoScreen}
-        options={{title: 'Add'}}
-      />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-    </Tab.Navigator>
+    </TabPrincipal.Navigator>
   );
 }
 
