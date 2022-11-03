@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
 import {
   Text,
   View,
@@ -8,44 +7,44 @@ import {
   TextInput,
 } from 'react-native';
 
-import {login} from '../store/actions/user';
-
-class Login extends Component {
+class Register extends Component {
   state = {
-    name: 'Temp',
+    name: '',
     email: '',
-    password: '',
-  };
-
-  login = () => {
-    this.props.onLogin({...this.state});
-    this.props.navigation.navigate('Profile');
+    password: 11,
   };
 
   render() {
     return (
       <View style={styles.container}>
         <TextInput
+          placeholder="Nome"
           style={styles.input}
-          placeholder="Email"
           autoFocus={true}
-          keyboardType="email-address"
+          value={this.state.name}
+          onChangeText={name => this.setState({name})}
+        />
+        <TextInput
+          placeholder="Email"
+          style={styles.input}
+          autoFocus={true}
           value={this.state.email}
           onChangeText={email => this.setState({email})}
         />
-
         <TextInput
-          style={styles.input}
           placeholder="Senha"
           secureTextEntry={true}
+          style={styles.input}
+          autoFocus={true}
           value={this.state.password}
           onChangeText={password => this.setState({password})}
         />
-        <TouchableOpacity style={styles.button} onPress={this.login}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={this.criarConta}>
-          <Text style={styles.buttonText}>Criar nova conta...</Text>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate('Register');
+          }}
+          style={styles.button}>
+          <Text style={styles.buttonText}>Salvar</Text>
         </TouchableOpacity>
       </View>
     );
@@ -54,6 +53,7 @@ class Login extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -73,14 +73,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderWidth: 1,
     borderColor: '#333',
+    paddingLeft: 15,
   },
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onLogin: user => dispatch(login(user)),
-  };
-};
-
-// export default Login;
-export default connect(null, mapDispatchToProps)(Login);
+export default Register;

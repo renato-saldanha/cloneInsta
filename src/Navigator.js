@@ -1,6 +1,5 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import {View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -10,86 +9,59 @@ import Feed from './screens/Feed';
 import AddPhoto from './screens/AddPhoto';
 import Profile from './screens/Profile';
 import Login from './screens/Login';
+import Register from './screens/Register';
 
 const TabPrincipal = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const StackAuthOrProfile = createNativeStackNavigator();
+const StackAuth = createNativeStackNavigator();
 
-function FeedScreen() {
-  return (
-    <View>
-      <Feed />
-    </View>
-  );
-}
+const icons = {
+  Feed: 'home',
+  AddPhoto: 'camera',
+  AuthOrProfile: 'user',
+};
 
-function AddPhotoScreen() {
-  return (
-    <View>
-      <AddPhoto />
-    </View>
-  );
-}
+export default props => {
+  // const {email} = getUser();
+  const email = '';
 
-function ProfileScreen() {
-  return (
-    <View>
-      <Profile />
-    </View>
-  );
-}
-
-function LoginScreen() {
-  return (
-    <View>
-      <Login />
-    </View>
-  );
-}
-
-function ProfileOrLogoutScreen() {
-  return (
-    <Stack.Navigator
-      initialRouteName="ProfileScreen"
+  const Auth = () => (
+    <StackAuth.Navigator
+      initialRouteName="Login"
       screenOptions={({route}) => ({
         headerShown: false,
       })}>
-      <Stack.Screen name="ProfileScreen" component={Profile} />
-      <Stack.Screen name="LoginScreen" component={Login} />
-    </Stack.Navigator>
+      <StackAuth.Screen name="Login" component={Login} />
+      <StackAuth.Screen name="Register" component={Register} />
+    </StackAuth.Navigator>
   );
-}
 
-function Navigator() {
-  return (
-    <TabPrincipal.Navigator
-      initialRouteName="Feed"
-      screenOptions={({route}) => ({
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarIcon: ({color}) => {
-          const icons = {
-            Feed: 'home',
-            AddPhoto: 'camera',
-            ProfileOrLogoutScreen: 'user',
-          };
-
-          return <Icon name={icons[route.name]} size={30} color={color} />;
-        },
-      })}>
-      <TabPrincipal.Screen name="Feed" component={FeedScreen} />
-      <TabPrincipal.Screen name="AddPhoto" component={AddPhotoScreen} />
-      <TabPrincipal.Screen
-        name="ProfileOrLogoutScreen"
-        component={ProfileOrLogoutScreen}
-      />
-    </TabPrincipal.Navigator>
+  const AuthOrProfile = () => (
+    <StackAuthOrProfile.Navigator
+      initialRouteName={email ? 'Profile' : 'Auth'}
+      screenOptions={({route}) => ({headerShown: false})}>
+      <StackAuthOrProfile.Screen name="Profile" component={Profile} />
+      <StackAuthOrProfile.Screen name="Auth" component={Auth} />
+    </StackAuthOrProfile.Navigator>
   );
-}
 
-export default function NavigatorMenu() {
   return (
     <NavigationContainer>
-      <Navigator />
+      <TabPrincipal.Navigator
+        initialRouteName="Feed"
+        screenOptions={({route}) => ({
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarIcon: ({tintColor, size}) => {
+            return (
+              <Icon name={icons[route.name]} size={size} color={tintColor} />
+            );
+          },
+        })}>
+        <TabPrincipal.Screen name="Feed" component={Feed} />
+        <TabPrincipal.Screen name="AddPhoto" component={AddPhoto} />
+        <TabPrincipal.Screen name="AuthOrProfile" component={AuthOrProfile} />
+      </TabPrincipal.Navigator>
     </NavigationContainer>
   );
-}
+};
